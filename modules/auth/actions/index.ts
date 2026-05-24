@@ -54,22 +54,17 @@ export const currentUserRole = async () => {
       },
     });
 
-    return {
-      success: true,
-      message: "User role fetched",
-      userRole: userRole?.role,
-    };
+    return userRole?.role;
   } catch (error) {
     console.error(error);
     return { success: false, message: "Error fetching user role" };
   }
 };
 
-
 // export const getCurrentUserData = async () => {
 //   try {
-    
+
 //   } catch (error) {
-    
+
 //   }
 // }
