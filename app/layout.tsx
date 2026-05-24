@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -40,12 +41,20 @@ export default function RootLayout({
         "font-mono",
         jetbrainsMono.variable,
       )}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
 }
-
-
