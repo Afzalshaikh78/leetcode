@@ -1,16 +1,28 @@
+import { prisma } from "@/lib/db";
 import { UserRole } from "@/lib/generated/prisma/enums";
-import { getJudge0languageId, submitBatch } from "@/lib/judge0";
-import { currentUserRole } from "@/modules/auth/actions";
+import {
+  getJudge0languageId,
+  pollBatchResults,
+  submitBatch,
+} from "@/lib/judge0";
+import { currentUserRole, getCurrentUserData } from "@/modules/auth/actions";
+
 import { NextRequest, NextResponse } from "next/server";
-import test from "node:test";
+
+type Judge0SubmissionResponse = {
+  token: string;
+};
 
 export async function POST(request: NextRequest) {
   try {
     const userRole = await currentUserRole();
+    const user = await getCurrentUserData();
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 401 });
+    }
     if (userRole !== UserRole.ADMIN) {
-      return new Response("Unauthorized", {
-        status: 401,
-      });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const {
@@ -41,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     if (!Array.isArray(testCases) || testCases.length === 0) {
       return NextResponse.json(
-        { error: "Test cases are required" },
+        { error: "At least one test case is required" },
         { status: 400 },
       );
     }
@@ -60,10 +72,65 @@ export async function POST(request: NextRequest) {
       }));
       // 3. Submit all testcases in one batch
 
-      const submissionResults = await submitBatch(submissions);
+      const submissionResults: Judge0SubmissionResponse[] =
+        await submitBatch(submissions);
+      // 4. Extract tokens from response
+      const tokens = submissionResults.map((res) => res.token);
 
-      const tokens = submissionResults.map((res:any)=>res.token);
-      return NextResponse.json({ submissionResults }, { status: 200 });
+      // 5. Poll judge0 until all submissions are done
+      const results = await pollBatchResults(tokens);
+      // 6. validate that each test cases
+
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+
+        if (result.status.id !== 3) {
+          return NextResponse.json(
+            {
+              error: `Validation failed for ${language}`,
+              testCase: {
+                input: submissions[i].stdin,
+                expectedOutput: submissions[i].expected_output,
+                actualOutput: result.stdout,
+                error: result.stderr || result.compile_output,
+              },
+              details: result,
+            },
+            { status: 400 },
+          );
+        }
+      }
     }
-  } catch (error) {}
+
+    const newProblem = await prisma.problem.create({
+      data: {
+        title,
+        description,
+        difficulty,
+        tags,
+        examples,
+        constraints,
+        testCases,
+        codeSnippets,
+        referenceSolutions,
+
+        userId: user.id
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Problem Created Successfully",
+        data: newProblem,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Failed to save problem to database" },
+      { status: 500 },
+    );
+  }
 }
