@@ -10,7 +10,13 @@ export function getJudge0languageId(language: string) {
   return languageMap[language.toUpperCase() as keyof typeof languageMap];
 }
 
-export async function submitBatch(submissions: any[]) {
+interface Judge0Submission {
+  source_code: string;
+  language_id: number;
+  stdin?: string;
+}
+
+export async function submitBatch(submissions: Judge0Submission[]) {
   const options = {
     method: "POST",
     url: "https://judge029.p.rapidapi.com/submissions/batch",
@@ -52,7 +58,7 @@ export async function pollBatchResults(tokens: string[]) {
     const results = data.submissions;
 
     const isAllDone = results.every(
-      (r) => r.status.id !== 1 && r.status.id !== 2,
+      (r: { status: { id: number } }) => r.status.id !== 1 && r.status.id !== 2,
     );
 
     if (isAllDone) return results;
