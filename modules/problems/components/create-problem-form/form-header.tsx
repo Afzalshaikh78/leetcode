@@ -1,25 +1,10 @@
 "use client";
-import type { Dispatch, SetStateAction } from "react";
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
-type SampleType = "DP" | "string";
-
-interface SampleTypeToggleProps {
-  sampleType: SampleType;
-  setSampleType: Dispatch<SetStateAction<SampleType>>;
-}
-
-interface FormHeaderProps extends SampleTypeToggleProps {
-  onLoadSample: () => void;
-}
-
-export function FormHeader({
-  sampleType,
-  setSampleType,
-  onLoadSample,
-}: FormHeaderProps) {
+export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
   return (
     <CardHeader className="pb-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -49,10 +34,7 @@ export function FormHeader({
   );
 }
 
-function SampleTypeToggle({
-  sampleType,
-  setSampleType,
-}: SampleTypeToggleProps) {
+function SampleTypeToggle({ sampleType, setSampleType }: any) {
   return (
     <div className="flex border rounded-md">
       <Button

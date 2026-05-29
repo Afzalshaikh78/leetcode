@@ -1,10 +1,6 @@
 import { prisma } from "@/lib/db";
 import { UserRole } from "@/lib/generated/prisma/enums";
-import {
-  getJudge0languageId,
-  pollBatchResults,
-  submitBatch,
-} from "@/lib/judge0";
+import { getJudge0languageId, pollBatchResults, submitBatch } from "@/lib/judge0";
 import { currentUserRole, getCurrentUserData } from "@/modules/auth/actions";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -25,37 +21,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {
-      title,
-      description,
-      difficulty,
-      tags,
-      examples,
-      constraints,
-      testCases,
-      codeSnippets,
-      referenceSolutions,
-    } = await request.json();
+    const { title, description, difficulty, tags, examples, constraints, testCases, codeSnippets, referenceSolutions } = await request.json();
 
-    if (
-      !title ||
-      !description ||
-      !difficulty ||
-      !testCases ||
-      !codeSnippets ||
-      !referenceSolutions
-    ) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
+    if (!title || !description || !difficulty || !testCases || !codeSnippets || !referenceSolutions) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     if (!Array.isArray(testCases) || testCases.length === 0) {
-      return NextResponse.json(
-        { error: "At least one test case is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "At least one test case is required" }, { status: 400 });
     }
 
     for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
@@ -65,15 +38,17 @@ export async function POST(request: NextRequest) {
       // 2. prepare judge0 submissions for all test cases
 
       const submissions = testCases.map(({ input, output }) => ({
-        source_code: solutionCode,
+        source_code: String(solutionCode),
         language_id: languageId,
         stdin: input,
         expected_output: output,
       }));
+
+
+      // console.log("Submissions:", submissions);
       // 3. Submit all testcases in one batch
 
-      const submissionResults: Judge0SubmissionResponse[] =
-        await submitBatch(submissions);
+      const submissionResults: Judge0SubmissionResponse[] = await submitBatch(submissions);
       // 4. Extract tokens from response
       const tokens = submissionResults.map((res) => res.token);
 
@@ -96,7 +71,7 @@ export async function POST(request: NextRequest) {
               },
               details: result,
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
       }
@@ -114,7 +89,7 @@ export async function POST(request: NextRequest) {
         codeSnippets,
         referenceSolutions,
 
-        userId: user.id
+        userId: user.id,
       },
     });
 
@@ -124,13 +99,10 @@ export async function POST(request: NextRequest) {
         message: "Problem Created Successfully",
         data: newProblem,
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json(
-      { error: "Failed to save problem to database" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to save problem to database" }, { status: 500 });
   }
 }

@@ -10,13 +10,25 @@ export function getJudge0languageId(language: string) {
   return languageMap[language.toUpperCase() as keyof typeof languageMap];
 }
 
-interface Judge0Submission {
-  source_code: string;
-  language_id: number;
-  stdin?: string;
+export function getLanguageName(languageId: number) {
+  const LANGUAGE_NAMES = {
+    74: "TypeScript",
+    63: "JavaScript",
+    71: "Python",
+    62: "Java",
+  };
+  return LANGUAGE_NAMES[languageId as keyof typeof LANGUAGE_NAMES] || "Unknown";
 }
 
-export async function submitBatch(submissions: Judge0Submission[]) {
+
+interface Judge0SubmissionResponse {
+  source_code: string;
+  language_id: number;
+  stdin: string;
+  base64_encoded: boolean;
+}
+
+export async function submitBatch(submissions: Judge0SubmissionResponse[]) {
   const options = {
     method: "POST",
     url: "https://judge029.p.rapidapi.com/submissions/batch",
@@ -24,8 +36,8 @@ export async function submitBatch(submissions: Judge0Submission[]) {
       base64_encoded: "false",
     },
     headers: {
-      "x-rapidapi-key": "9674497668msh064b507deb2789cp1e35e1jsnf6143e036865",
-      "x-rapidapi-host": "judge0-extra-ce1.p.rapidapi.com",
+      "x-rapidapi-key": "62000bded8msh797b06efe3466c1p1087d4jsn988a1acf2d8a",
+      "x-rapidapi-host": "judge029.p.rapidapi.com",
       "Content-Type": "application/json",
     },
     data: {
@@ -42,24 +54,24 @@ export async function pollBatchResults(tokens: string[]) {
   while (true) {
     const options = {
       method: "GET",
-      url: "https://judge0-extra-ce1.p.rapidapi.com/submissions/batch",
+      url: "https://judge029.p.rapidapi.com/submissions/batch",
       params: {
         tokens: tokens.join(","),
-        base64_encoded: "true",
+        base64_encoded: "false",
         fields: "*",
       },
       headers: {
-        "x-rapidapi-key": "9674497668msh064b507deb2789cp1e35e1jsnf6143e036865",
-        "x-rapidapi-host": "judge0-extra-ce1.p.rapidapi.com",
+        "x-rapidapi-key": "62000bded8msh797b06efe3466c1p1087d4jsn988a1acf2d8a",
+        "x-rapidapi-host": "judge029.p.rapidapi.com",
         "Content-Type": "application/json",
       },
     };
+
     const { data } = await axios.request(options);
+
     const results = data.submissions;
 
-    const isAllDone = results.every(
-      (r: { status: { id: number } }) => r.status.id !== 1 && r.status.id !== 2,
-    );
+    const isAllDone = results.every((r: { status: { id: number } }) => r.status.id !== 1 && r.status.id !== 2);
 
     if (isAllDone) return results;
 
@@ -67,6 +79,4 @@ export async function pollBatchResults(tokens: string[]) {
   }
 }
 
-export const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
