@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { executeCode, runCode } from "../actions";
 
-type ProblemLike = {
+export type ProblemLike = {
   id: string;
   codeSnippets?: Record<string, string>;
   testCases: unknown;
@@ -81,7 +81,7 @@ export function useEditor(problem: ProblemLike | null, addSubmission: (s: Submis
 
       if (res.success && res.submission) {
         addSubmission(res.submission);
-        toast.success("Code executed successfully")
+        toast.success("Code executed successfully");
       }
     } catch (error) {
       console.error("Error executing code", error);

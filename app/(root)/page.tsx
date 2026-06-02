@@ -2,9 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { onBoardUser } from "@/modules/auth/actions";
 import {
-  ChevronRight,
   Code2,
-  Play,
   Star,
   Trophy,
   Users,
@@ -18,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
   await onBoardUser();

@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ProblemHeader } from "@/modules/problems/components/problem-header";
 import { ProblemDescription } from "@/modules/problems/components/problem-description";
 import { ProblemTabs } from "@/modules/problems/components/problem-tabs";
-import { useEditor } from "@/modules/problems/hooks/use-editor";
+import { ProblemLike, useEditor } from "@/modules/problems/hooks/use-editor";
 import CodeEditorPanel from "@/modules/problems/components/code-editor-panel";
 import TestCasesPanel from "@/modules/problems/components/testcases-panel";
 import { ExecutionResults } from "@/modules/problems/components/execution-results";
@@ -17,8 +17,8 @@ const ProblemIdPage = () => {
   const params = useParams<{ id: string }>();
 
   const { problem, isLoading } = useProblem(params.id);
-const { submissionHistory, addSubmission } = useSubmissionHistory(params.id);
-const { selectedLanguage, setSelectedLanguage, code, setCode, isRunning, isSubmitting, executionResponse, handleRun, handleSubmit } = useEditor(problem, addSubmission);
+  const { submissionHistory, addSubmission } = useSubmissionHistory(params.id);
+  const { selectedLanguage, setSelectedLanguage, code, setCode, isRunning, isSubmitting, executionResponse, handleRun, handleSubmit } = useEditor(problem as ProblemLike, addSubmission);
 
   if (isLoading) {
     return (
