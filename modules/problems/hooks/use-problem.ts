@@ -1,32 +1,29 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { getProblemById } from "../actions";
+import { Problem } from "@/lib/generated/prisma/client";
 
-export function useProblem(id:string){
+export function useProblem(id: string) {
+  const [problem, setProblem] = useState<Problem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const [problem , setProblem] = useState(null);
-    const [isLoading , setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetchProblem = async () => {
+      try {
+        setIsLoading(true);
+        const problemData = await getProblemById(id);
 
-    useEffect(()=>{
-        const fetchProblem = async()=>{
-            try {
-                setIsLoading(true);
-                const problemData = await getProblemById(id);
-
-                if(problemData.success){
-                    // @ts-ignore
-                    setProblem(problemData.data)
-                }
-            } catch (error) {
-                 console.error('Error fetching problem:', error); 
-            }
-            finally{
-                setIsLoading(false)
-            }
+        if (problemData.success) {
+          setProblem(problemData.data!);
         }
+      } catch (error) {
+        console.error("Error fetching problem:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        fetchProblem();
-    },[id])
+    fetchProblem();
+  }, [id]);
 
-
-    return {problem , isLoading}
+  return { problem, isLoading };
 }

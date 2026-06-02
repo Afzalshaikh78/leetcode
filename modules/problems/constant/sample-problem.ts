@@ -346,7 +346,169 @@ public class Main {
   },
 };
 
+export const sampleArrayProblem = {
+  title: "Maximum Subarray",
+  description:
+    "Given an integer array nums, find the contiguous subarray with the largest sum, and return its sum.",
+  difficulty: "MEDIUM",
+  tags: ["Array", "Dynamic Programming", "Kadane"],
+  constraints: "1 <= nums.length <= 10^5\n-10^4 <= nums[i] <= 10^4",
+  hints:
+    "Track the best subarray ending at each position, then compare it with the global best. You can either extend the previous subarray or start fresh.",
+  editorial:
+    "This problem is a classic application of Kadane's algorithm. At each index, the best sum ending there is either the current number alone or the current number plus the previous best ending sum. The answer is the maximum of all ending sums.",
+  testCases: [
+    { input: "[-2,1,-3,4,-1,2,1,-5,4]", output: "6" },
+    { input: "[1]", output: "1" },
+    { input: "[5,4,-1,7,8]", output: "23" },
+  ],
+  examples: {
+    JAVASCRIPT: {
+      input: "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+      output: "6",
+      explanation: "The subarray [4,-1,2,1] has the largest sum 6.",
+    },
+    PYTHON: {
+      input: "nums = [1]",
+      output: "1",
+      explanation: "The only subarray is [1], so the answer is 1.",
+    },
+    JAVA: {
+      input: "nums = [5,4,-1,7,8]",
+      output: "23",
+      explanation: "The whole array has the largest sum 23.",
+    },
+  },
+  codeSnippets: {
+    JAVASCRIPT: `/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+function maxSubArray(nums) {
+  // Write your code here
+}
+
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', (line) => {
+  const nums = JSON.parse(line.trim());
+  console.log(maxSubArray(nums));
+  rl.close();
+});`,
+    PYTHON: `class Solution:
+    def maxSubArray(self, nums):
+        # Write your code here
+        pass
+
+if __name__ == "__main__":
+    import sys, json
+    nums = json.loads(sys.stdin.readline().strip())
+    sol = Solution()
+    print(sol.maxSubArray(nums))`,
+    JAVA: `import java.util.*;
+
+class Main {
+    public int maxSubArray(int[] nums) {
+        // Write your code here
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine().trim();
+        input = input.substring(1, input.length() - 1);
+        String[] parts = input.isEmpty() ? new String[0] : input.split(",");
+        int[] nums = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            nums[i] = Integer.parseInt(parts[i].trim());
+        }
+        Main main = new Main();
+        System.out.println(main.maxSubArray(nums));
+        scanner.close();
+    }
+}`,
+  },
+  referenceSolutions: {
+    JAVASCRIPT: `/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+function maxSubArray(nums) {
+  let current = nums[0];
+  let best = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    current = Math.max(nums[i], current + nums[i]);
+    best = Math.max(best, current);
+  }
+
+  return best;
+}
+
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', (line) => {
+  const nums = JSON.parse(line.trim());
+  console.log(maxSubArray(nums));
+  rl.close();
+});`,
+    PYTHON: `class Solution:
+    def maxSubArray(self, nums):
+        current = best = nums[0]
+        for num in nums[1:]:
+            current = max(num, current + num)
+            best = max(best, current)
+        return best
+
+if __name__ == "__main__":
+    import sys, json
+    nums = json.loads(sys.stdin.readline().strip())
+    sol = Solution()
+    print(sol.maxSubArray(nums))`,
+    JAVA: `import java.util.*;
+
+class Main {
+    public int maxSubArray(int[] nums) {
+        int current = nums[0];
+        int best = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            current = Math.max(nums[i], current + nums[i]);
+            best = Math.max(best, current);
+        }
+
+        return best;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine().trim();
+        input = input.substring(1, input.length() - 1);
+        String[] parts = input.isEmpty() ? new String[0] : input.split(",");
+        int[] nums = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            nums[i] = Integer.parseInt(parts[i].trim());
+        }
+        Main main = new Main();
+        System.out.println(main.maxSubArray(nums));
+        scanner.close();
+    }
+}`,
+  },
+};
+
 export const SAMPLE_PROBLEMS = {
   DP: sampleDPProblem,
   string: sampleStringProblem,
+  array: sampleArrayProblem,
 };

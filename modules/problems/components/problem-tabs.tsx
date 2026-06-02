@@ -10,7 +10,7 @@ export const ProblemTabs = ({problem , submissionHistory}:any) => {
      <Card>
       <CardContent className="p-3">
         <Tabs defaultValue="submissions" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-3">
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <Trophy className="h-4 w-4" />
               Submissions

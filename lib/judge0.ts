@@ -26,6 +26,8 @@ interface Judge0SubmissionResponse {
   language_id: number;
   stdin: string;
   base64_encoded: boolean;
+  expected_output?: string;
+  wait?: boolean;
 }
 
 export async function submitBatch(submissions: Judge0SubmissionResponse[]) {

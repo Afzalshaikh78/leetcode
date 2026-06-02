@@ -93,7 +93,7 @@ function DifficultyField({ control, error }: DifficultyFieldProps) {
       <Controller
         name="difficulty"
         control={control}
-        render={({ field }) => (
+        render={({ field }: { field: any }) => (
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <SelectTrigger className="mt-2">
               <SelectValue placeholder="Select difficulty" />

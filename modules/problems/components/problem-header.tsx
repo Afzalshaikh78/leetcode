@@ -5,8 +5,13 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getDifficultyColor, normalizeDifficulty } from "../constant";
+import { Problem } from "@/lib/generated/prisma/client";
 
-export function ProblemHeader({ problem }: any) {
+
+interface ProblemHeaderProps {
+  problem: Problem | null;
+}
+export function ProblemHeader({ problem }: ProblemHeaderProps) {
   return (
     <div className="mb-6 flex items-start justify-between">
       <div>

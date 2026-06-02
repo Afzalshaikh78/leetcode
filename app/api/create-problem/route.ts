@@ -5,10 +5,6 @@ import { currentUserRole, getCurrentUserData } from "@/modules/auth/actions";
 
 import { NextRequest, NextResponse } from "next/server";
 
-type Judge0SubmissionResponse = {
-  token: string;
-};
-
 export async function POST(request: NextRequest) {
   try {
     const userRole = await currentUserRole();
@@ -21,7 +17,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, description, difficulty, tags, examples, constraints, testCases, codeSnippets, referenceSolutions } = await request.json();
+    const {
+      title,
+      description,
+      difficulty,
+      tags,
+      examples,
+      constraints,
+      hints,
+      editorial,
+      testCases,
+      codeSnippets,
+      referenceSolutions,
+    } = await request.json();
 
     if (!title || !description || !difficulty || !testCases || !codeSnippets || !referenceSolutions) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -42,15 +50,16 @@ export async function POST(request: NextRequest) {
         language_id: languageId,
         stdin: input,
         expected_output: output,
+        base64_encoded: false,
       }));
 
 
       // console.log("Submissions:", submissions);
       // 3. Submit all testcases in one batch
 
-      const submissionResults: Judge0SubmissionResponse[] = await submitBatch(submissions);
+      const submissionResults = await submitBatch(submissions);
       // 4. Extract tokens from response
-      const tokens = submissionResults.map((res) => res.token);
+      const tokens = submissionResults.map((res: { token: string }) => res.token);
 
       // 5. Poll judge0 until all submissions are done
       const results = await pollBatchResults(tokens);
@@ -85,6 +94,8 @@ export async function POST(request: NextRequest) {
         tags,
         examples,
         constraints,
+        hints,
+        editorial,
         testCases,
         codeSnippets,
         referenceSolutions,

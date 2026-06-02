@@ -18,9 +18,11 @@ export function CreateProblemForm() {
     tagsArray,
     isLoading,
     sampleType,
+    isSampleLoaded,
     setSampleType,
     onSubmit,
     loadSampleData,
+    resetFormToDefault,
   } = useCreateProblem();
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
@@ -39,7 +41,11 @@ export function CreateProblemForm() {
             <TestCasesSection form={form} testCasesArray={testCasesArray}/>
             <LanguageSections form={form}/>
               <AdditionalInfoSection form={form} />
-              <SubmitButton isLoading={isLoading} />
+              <SubmitButton
+                isLoading={isLoading}
+                showReset={isSampleLoaded}
+                onReset={resetFormToDefault}
+              />
           </form>
         </CardContent>
       </Card>
@@ -48,9 +54,22 @@ export function CreateProblemForm() {
 }
 
 
-function SubmitButton({isLoading}:any){
+function SubmitButton({
+  isLoading,
+  showReset,
+  onReset,
+}: {
+  isLoading: boolean;
+  showReset: boolean;
+  onReset: () => void;
+}) {
 return (
-     <div className="flex justify-end mt-6">
+     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+      {showReset && (
+        <Button type="button" variant="outline" size="lg" onClick={onReset} disabled={isLoading}>
+          Reset Sample
+        </Button>
+      )}
       <Button type="submit" size="lg" disabled={isLoading} className="gap-2">
         {isLoading ? (
           <>

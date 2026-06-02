@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { onBoardUser } from "@/modules/auth/actions";
 import {
@@ -17,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   await onBoardUser();
@@ -123,7 +125,7 @@ export default async function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Button
+            {/* <Button
               size="lg"
               className="bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 dark:hover:bg-amber-500 text-white dark:text-gray-900 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
             >
@@ -132,12 +134,16 @@ export default async function Home() {
               <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
+              onClick={() => {
+                redirect('/problems')
+              }}
               variant="outline"
               size="lg"
+              
               className="border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950"
             >
               Browse Problems
-            </Button>
+            </Button> */}
           </div>
 
           {/* Stats */}

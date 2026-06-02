@@ -2,9 +2,16 @@
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
-export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
+type SampleType = "DP" | "string" | "array";
+
+type FormHeaderProps = {
+  sampleType: SampleType;
+  setSampleType: (sampleType: SampleType) => void;
+  onLoadSample: () => void;
+};
+
+export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHeaderProps) {
   return (
     <CardHeader className="pb-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -34,7 +41,7 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
   );
 }
 
-function SampleTypeToggle({ sampleType, setSampleType }: any) {
+function SampleTypeToggle({ sampleType, setSampleType }: Pick<FormHeaderProps, "sampleType" | "setSampleType">) {
   return (
     <div className="flex border rounded-md">
       <Button
@@ -54,6 +61,15 @@ function SampleTypeToggle({ sampleType, setSampleType }: any) {
         onClick={() => setSampleType("string")}
       >
         String Problem
+      </Button>
+      <Button
+        type="button"
+        variant={sampleType === "array" ? "default" : "outline"}
+        size="sm"
+        className="rounded-l-none"
+        onClick={() => setSampleType("array")}
+      >
+        Array Problem
       </Button>
     </div>
   );

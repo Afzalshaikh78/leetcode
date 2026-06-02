@@ -9,14 +9,15 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { defaultFormValues, problemSchema } from "@/modules/problems/schema";
 import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problem";
-import { SampleType } from "@/modules/problems/components/create-problem-form/form-header";
 
 type ProblemFormData = z.infer<typeof problemSchema>;
+type SampleType = "DP" | "string" | "array";
 
 export function useCreateProblem() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [sampleType, setSampleType] = useState<SampleType>("DP");
+  const [isSampleLoaded, setIsSampleLoaded] = useState(false);
 
   const form = useForm<ProblemFormData>({
     resolver: zodResolver(problemSchema),
@@ -30,7 +31,7 @@ export function useCreateProblem() {
 
   // useFieldArray requires objects, not primitives.
   // tags is string[] in the schema, so we manage it manually via form.setValue.
-  const tagsValue = form.watch("tags");
+  const tagsValue = form.watch("tags") ?? [];
 
   const tagsArray = {
     fields: tagsValue.map((value, id) => ({ id: String(id), value })),
@@ -83,8 +84,14 @@ const onSubmit = async (values: ProblemFormData) => {
   const loadSampleData = () => {
     const sampleData = SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS] as ProblemFormData;
     form.reset(sampleData);
+    setIsSampleLoaded(true);
     // No need to call tagsArray.replace / testCasesArray.replace separately —
     // form.reset replaces all fields including tags and testCases.
+  };
+
+  const resetFormToDefault = () => {
+    form.reset(defaultFormValues);
+    setIsSampleLoaded(false);
   };
 
   return {
@@ -93,8 +100,10 @@ const onSubmit = async (values: ProblemFormData) => {
     tagsArray,
     isLoading,
     sampleType,
+    isSampleLoaded,
     setSampleType,
     onSubmit: form.handleSubmit(onSubmit),
     loadSampleData,
+    resetFormToDefault,
   };
 }

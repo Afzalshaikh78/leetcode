@@ -1,4 +1,4 @@
-export function ConstraintsSection({ constraints }:any) {
+export function ConstraintsSection({ constraints }: { constraints?: string }) {
   if (!constraints) return null;
 
   return (

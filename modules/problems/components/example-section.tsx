@@ -1,8 +1,15 @@
 'use client';
 
+type ExampleSectionProps = {
+  example: {
+    input: string;
+    output: string;
+    explanation?: string;
+  };
+  index: number;
+};
 
-
-export function ExampleSection({ example , index }:any) {
+export function ExampleSection({ example, index }: ExampleSectionProps) {
   if (!example) return null;
 
   return (

@@ -1,3 +1,6 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -7,11 +10,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Code, Send } from "lucide-react";
-import { useTheme } from "next-themes";
-import React from "react";
 import { EDITOR_OPTIONS, getEditorLanguage, LANGUAGE_OPTIONS } from "../constant";
-import { Editor } from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/providers/theme-provider";
+
+const Editor = dynamic(() => import("@monaco-editor/react"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[400px] w-full items-center justify-center bg-muted/20 text-sm text-muted-foreground">
+      Loading editor...
+    </div>
+  ),
+});
 
 const CodeEditorPanel = ({
   code,
@@ -49,17 +59,16 @@ const CodeEditorPanel = ({
       </CardHeader>
 
       <CardContent>
-        <div className="border rounded-lg overflow-hidden">
-            <Editor
+        <div className="min-h-100 border rounded-lg overflow-hidden">
+          <Editor
             height={"400px"}
+            width="100%"
             language={getEditorLanguage(selectedLanguage)}
             value={code}
-            // @ts-ignore
-            onChange={(value:string)=>onCodeChange(value || "")}
-            theme={theme === "dark" ? "vs-dark":"light"}
-            // @ts-ignore
-            options={EDITOR_OPTIONS}
-            />
+            onChange={(value: string | undefined) => onCodeChange(value || "")}
+            theme={theme === "dark" ? "vs-dark" : "light"}
+            options={EDITOR_OPTIONS as any}
+          />
         </div>
 
         <div className="flex gap-3 mt-4">

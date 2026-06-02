@@ -5,7 +5,7 @@ export function usePlaylistActions() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
     useState(false);
-  const [selectedProblemId, setSelectedProblemId] = useState(null);
+  const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
 
   const handleCreatePlaylist = async (data: any) => {
     try {
@@ -29,7 +29,8 @@ export function usePlaylistActions() {
       }
     } catch (error) {
       console.error("Error creating playlist:", error);
-      toast.error(error.message || "Failed to create playlist");
+      const message = error instanceof Error ? error.message : "Failed to create playlist";
+      toast.error(message);
       return false;
     }
   };
@@ -53,12 +54,13 @@ export function usePlaylistActions() {
       }
     } catch (error) {
       console.error("Error adding to playlist:", error);
-      toast.error(error.message || "Failed to add problem to playlist");
+      const message = error instanceof Error ? error.message : "Failed to add problem to playlist";
+      toast.error(message);
       return false;
     }
   };
 
-  const openAddToPlaylist = (problemId: any) => {
+  const openAddToPlaylist = (problemId: string) => {
     setSelectedProblemId(problemId);
     setIsAddToPlaylistModalOpen(true);
   };

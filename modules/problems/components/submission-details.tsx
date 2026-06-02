@@ -2,16 +2,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Clock, CpuIcon, Code, CheckCircle2, XCircle } from "lucide-react";
 
-export const SubmissionDetails = ({ submission }:any) => {
+type SubmissionDetailsItem = {
+  status: string;
+  createdAt: string | Date;
+  language: string;
+  memory: string | null;
+  time: string | null;
+};
+
+export const SubmissionDetails = ({ submission }: { submission: SubmissionDetailsItem }) => {
   const isSuccess = submission.status === "Accepted";
   const averageMemory = submission.memory ? 
-    JSON.parse(submission.memory).reduce((a, b) => parseFloat(a) + parseFloat(b), 0) / 
+    JSON.parse(submission.memory).reduce((a: number, b: string) => parseFloat(String(a)) + parseFloat(String(b)), 0) / 
     JSON.parse(submission.memory).length : 0;
     
   const averageTime = submission.time ? 
     JSON.parse(submission.time)
-      .map(t => parseFloat(t.replace(" s", "")))
-      .reduce((a, b) => a + b, 0) / 
+      .map((t: string) => parseFloat(t.replace(" s", "")))
+      .reduce((a: number, b: number) => a + b, 0) / 
     JSON.parse(submission.time).length : 0;
 
   return (

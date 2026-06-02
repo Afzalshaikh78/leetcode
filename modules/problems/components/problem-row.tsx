@@ -7,12 +7,24 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getDifficultyColor, normalizeDifficulty } from "../constant";
+import type { Problem, User } from "@/lib/generated/prisma/client";
+
+type ProblemWithSolvedBy = Problem & {
+  solvedBy?: Array<{ userId: string }>;
+};
+
+type ProblemRowProps = {
+  problem: ProblemWithSolvedBy;
+  user: User | null;
+  onDelete: (problemId: string) => void | Promise<void>;
+  onSave: (problemId: string) => void;
+};
 
 /**
  * Single row in the problems table
  */
-export function ProblemRow({ problem, user, onDelete, onSave }) {
-  const isSolved = problem.solvedBy?.length > 0;
+export function ProblemRow({ problem, user, onDelete, onSave }: ProblemRowProps) {
+  const isSolved = problem.solvedBy?.some((solved) => solved.userId === user?.id);
 
   return (
     <TableRow>
@@ -38,12 +50,7 @@ export function ProblemRow({ problem, user, onDelete, onSave }) {
 
       {/* Action buttons */}
       <TableCell>
-        <ActionButtons
-          problemId={problem.id}
-          isAdmin={user?.role === "ADMIN"}
-          onDelete={onDelete}
-          onSave={onSave}
-        />
+        <ActionButtons problemId={problem.id} isAdmin={user?.role === "ADMIN"} onDelete={onDelete} onSave={onSave} />
       </TableCell>
     </TableRow>
   );
@@ -52,25 +59,16 @@ export function ProblemRow({ problem, user, onDelete, onSave }) {
 /**
  * Checkbox showing if problem is solved
  */
-function SolvedCheckbox({ checked }) {
-  return (
-    <Checkbox
-      checked={checked}
-      disabled
-      className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-    />
-  );
+function SolvedCheckbox({ checked }: { checked?: boolean }) {
+  return <Checkbox checked={checked} disabled className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600" />;
 }
 
 /**
  * Problem title with link to problem page
  */
-function ProblemTitle({ id, title }) {
+function ProblemTitle({ id, title }: { id: string; title: string }) {
   return (
-    <Link
-      href={`/problem/${id}`}
-      className="text-primary hover:underline transition-colors"
-    >
+    <Link href={`/problem/${id}`} className="text-primary hover:underline transition-colors">
       {title}
     </Link>
   );
@@ -79,15 +77,11 @@ function ProblemTitle({ id, title }) {
 /**
  * List of tag badges
  */
-function TagsList({ tags = [] }) {
+function TagsList({ tags = [] }: { tags?: string[] }) {
   return (
     <div className="flex flex-wrap gap-1">
       {tags.map((tag, idx) => (
-        <Badge
-          key={idx}
-          variant="outline"
-          className="text-xs bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50"
-        >
+        <Badge key={idx} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50">
           {tag}
         </Badge>
       ))}
@@ -98,29 +92,31 @@ function TagsList({ tags = [] }) {
 /**
  * Difficulty badge with color
  */
-function DifficultyBadge({ difficulty }) {
+function DifficultyBadge({ difficulty }: { difficulty: string }) {
   const normalizedDifficulty = normalizeDifficulty(difficulty);
 
-  return (
-    <Badge className={`${getDifficultyColor(difficulty)} border-0 font-medium`}>
-      {normalizedDifficulty || difficulty}
-    </Badge>
-  );
+  return <Badge className={`${getDifficultyColor(difficulty)} border-0 font-medium`}>{normalizedDifficulty || difficulty}</Badge>;
 }
 
 /**
  * Action buttons (delete, edit, save to playlist)
  */
-function ActionButtons({ problemId, isAdmin, onDelete, onSave }) {
+function ActionButtons({
+  problemId,
+  isAdmin,
+  onDelete,
+  onSave,
+}: {
+  problemId: string;
+  isAdmin: boolean;
+  onDelete: (problemId: string) => void | Promise<void>;
+  onSave: (problemId: string) => void;
+}) {
   return (
     <div className="flex items-center gap-2">
       {isAdmin && (
         <>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(problemId)}
-          >
+          <Button variant="destructive" size="sm" onClick={() => onDelete(problemId)}>
             <TrashIcon className="h-4 w-4" />
           </Button>
           <Button variant="outline" size="sm" disabled>
@@ -128,12 +124,7 @@ function ActionButtons({ problemId, isAdmin, onDelete, onSave }) {
           </Button>
         </>
       )}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onSave(problemId)}
-        className="gap-2"
-      >
+      <Button variant="outline" size="sm" onClick={() => onSave(problemId)} className="gap-2">
         <Bookmark className="h-4 w-4" />
         <span className="hidden sm:inline">Save</span>
       </Button>

@@ -5,7 +5,6 @@ import { Submission, TestCaseResult } from "@/lib/generated/prisma/client";
 import { getLanguageName, pollBatchResults, submitBatch } from "@/lib/judge0";
 import { getCurrentUserData } from "@/modules/auth/actions";
 
-
 // -------------------------
 // Types
 // -------------------------
@@ -24,6 +23,15 @@ type DetailedResult = {
 
 type SubmissionWithTestCases = Submission & {
   testCases: TestCaseResult[];
+};
+
+type Judge0Result = {
+  stdout?: string;
+  stderr?: string;
+  compile_output?: string;
+  status: { description: string };
+  memory?: number;
+  time?: string;
 };
 
 // -------------------------
@@ -73,8 +81,6 @@ export const executeCode = async (source_code: string, language_id: number, stdi
     wait: false,
   }));
 
-  console.log("Submissions:", submissions);
-
   const submitResponse = await submitBatch(submissions);
 
   const tokens = submitResponse.map((res: { token: string }) => res.token);
@@ -82,37 +88,25 @@ export const executeCode = async (source_code: string, language_id: number, stdi
 
   let allPassed = true;
 
-  const detailedResults: DetailedResult[] = results.map(
-    (
-      result: {
-        stdout?: string;
-        stderr?: string;
-        compile_output?: string;
-        status: { description: string };
-        memory?: number;
-        time?: string;
-      },
-      i: number
-    ) => {
-      const stdout = result.stdout?.trim() ?? null;
-      const expected_output = expected_outputs[i]?.trim();
-      const passed = stdout === expected_output;
+  const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
+    const stdout = result.stdout?.trim() ?? null;
+    const expected_output = expected_outputs[i]?.trim();
+    const passed = stdout === expected_output;
 
-      if (!passed) allPassed = false;
+    if (!passed) allPassed = false;
 
-      return {
-        testCase: i + 1,
-        passed,
-        stdout,
-        expected: expected_output,
-        stderr: result.stderr ?? null,
-        compile_output: result.compile_output ?? null,
-        status: result.status.description,
-        memory: result.memory ? `${result.memory} KB` : undefined,
-        time: result.time ? `${result.time} s` : undefined,
-      };
-    }
-  );
+    return {
+      testCase: i + 1,
+      passed,
+      stdout,
+      expected: expected_output,
+      stderr: result.stderr ?? null,
+      compile_output: result.compile_output ?? null,
+      status: result.status.description,
+      memory: result.memory ? `${result.memory} KB` : undefined,
+      time: result.time ? `${result.time} s` : undefined,
+    };
+  });
 
   const submission = await prisma.submission.create({
     data: {
@@ -173,4 +167,47 @@ export const getAllSubmissionByCurrentUserForProblem = async (problemId: string)
   });
 
   return { success: true, data: submissions };
+};
+
+export const runCode = async (source_code: string, language_id: number, stdin: string[], expected_outputs: string[]) => {
+  const user = await getCurrentUserData();
+
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const submissions = stdin.map((input) => ({
+    source_code,
+    language_id,
+    stdin: input,
+    base64_encoded: false,
+    wait: false,
+  }));
+
+  const submitResponse = await submitBatch(submissions);
+  const tokens = submitResponse.map((res: { token: string }) => res.token);
+  const results = await pollBatchResults(tokens);
+
+  let allPassed = true;
+
+  const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
+    const stdout = result.stdout?.trim() ?? null;
+    const expected_output = expected_outputs[i]?.trim();
+    const passed = stdout === expected_output;
+
+    if (!passed) allPassed = false;
+
+    return {
+      testCase: i + 1,
+      passed,
+      stdout,
+      expected: expected_output,
+      stderr: result.stderr ?? null,
+      compile_output: result.compile_output ?? null,
+      status: result.status.description,
+      memory: result.memory ? `${result.memory} KB` : undefined,
+      time: result.time ? `${result.time} s` : undefined,
+    };
+  });
+
+  // ← no DB save here
+  return { success: true, detailedResults, allPassed };
 };

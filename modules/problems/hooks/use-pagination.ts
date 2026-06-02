@@ -1,13 +1,11 @@
 import { useState, useMemo } from "react";
 import { ITEMS_PER_PAGE } from "../constant";
 
+export function usePagination<T>(items: T[] = [], itemsPerPage = ITEMS_PER_PAGE) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(items.length / itemsPerPage);
 
-export function usePagination(items = [], itemsPerPage = ITEMS_PER_PAGE) {
-    const [currentPage , setCurrentPage] = useState(1);
-
-      const totalPages = Math.ceil(items.length / itemsPerPage); 
-
-       const paginatedItems = useMemo(() => {
+  const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return items.slice(startIndex, endIndex);
@@ -19,8 +17,7 @@ export function usePagination(items = [], itemsPerPage = ITEMS_PER_PAGE) {
     return { start, end, total: items.length };
   }, [currentPage, itemsPerPage, items.length]);
 
-
-    const goToNextPage = () => {
+  const goToNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
     }
@@ -32,26 +29,26 @@ export function usePagination(items = [], itemsPerPage = ITEMS_PER_PAGE) {
     }
   };
 
-  const goToPage = (page) => {
+  const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-   const resetPage = () => setCurrentPage(1);
+  const resetPage = () => setCurrentPage(1);
 
-   return {
+  return {
     currentPage,
     totalPages,
     paginatedItems,
     displayRange,
-    
+
     // Navigation
     goToNextPage,
     goToPreviousPage,
     goToPage,
     resetPage,
-    
+
     // Helpers for button states
     canGoNext: currentPage < totalPages,
     canGoPrevious: currentPage > 1,

@@ -2,10 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 import { ExampleSection } from "./example-section";
 import { ConstraintsSection } from "./constraint-section";
+import { Problem } from "@/lib/generated/prisma/client";
 
-export function ProblemDescription({ problem }: any) {
 
-  console.log(problem?.examples)
+interface ProblemDescriptionProps {
+  problem: Problem | null;
+}
+
+export function ProblemDescription({ problem  }: ProblemDescriptionProps) {
+
+  // console.log(problem?.examples)
 
   return (
     <Card>
@@ -22,10 +28,10 @@ export function ProblemDescription({ problem }: any) {
             {problem?.description}
           </p>
           {
-            Object.values(problem?.examples).map((example:any , index:number)=>(
+            problem?.examples ? Object.values(problem.examples as Record<string, { input: string; output: string; explanation?: string }>).map((example, index)=>(
 
-              <ExampleSection example={example} index={index}/>
-            ))
+              <ExampleSection key={index} example={example} index={index}/>
+            )) : null
           }
           <ConstraintsSection constraints={problem?.constraints}/>
         </div>

@@ -24,7 +24,15 @@ export function ProblemsFilters({
   selectedTag,
   onTagChange,
   allTags = [],
-}:any) {
+}: {
+  search: string;
+  onSearchChange: (value: string) => void;
+  difficulty: string;
+  onDifficultyChange: (value: string) => void;
+  selectedTag: string;
+  onTagChange: (value: string) => void;
+  allTags?: string[];
+}) {
   return (
     <Card>
       <CardHeader>
@@ -61,7 +69,7 @@ export function ProblemsFilters({
 /**
  * Search input with icon
  */
-function SearchInput({ value, onChange }) {
+function SearchInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return (
     <div className="relative">
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -78,7 +86,7 @@ function SearchInput({ value, onChange }) {
 /**
  * Difficulty filter dropdown
  */
-function DifficultySelect({ value, onChange }) {
+function DifficultySelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-[180px]">
@@ -99,7 +107,7 @@ function DifficultySelect({ value, onChange }) {
 /**
  * Tag filter dropdown
  */
-function TagSelect({ value, onChange, tags }) {
+function TagSelect({ value, onChange, tags }: { value: string; onChange: (value: string) => void; tags: string[] }) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-[180px]">

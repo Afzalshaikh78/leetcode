@@ -1,20 +1,24 @@
-import { useState , useMemo } from "react";
+import { useState, useMemo } from "react";
 
-export function useProblemFilters(problems: any[] = []){
-    console.log("useProblemFilters called with problems:", problems);
-      const [search, setSearch] = useState("");
+type ProblemFilterItem = {
+  title: string;
+  difficulty: string;
+  tags?: string[];
+};
+
+export function useProblemFilters<T extends ProblemFilterItem>(problems: T[] = []) {
+  const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("ALL");
   const [selectedTag, setSelectedTag] = useState("ALL");
 
-//   Extract all unique tags from the problems
-const allTags = useMemo(()=>{
-    const tagsSet = new Set();
-    problems.forEach((p: any)=>p.tags?.forEach((t: any)=>tagsSet.add(t)));
+  const allTags = useMemo(() => {
+    const tagsSet = new Set<string>();
+    problems.forEach((problem) => problem.tags?.forEach((tag) => tagsSet.add(tag)));
 
-    return Array.from(tagsSet)
-},[problems]);
+    return Array.from(tagsSet);
+  }, [problems]);
 
- const filteredProblems = useMemo(() => {
+  const filteredProblems = useMemo(() => {
     return problems
       .filter((problem) =>
         problem.title.toLowerCase().includes(search.toLowerCase())
@@ -25,11 +29,9 @@ const allTags = useMemo(()=>{
       .filter((problem) =>
         selectedTag === "ALL" ? true : problem.tags?.includes(selectedTag)
       );
-  }, [problems, search, difficulty, selectedTag]);
+  }, [problems, search, difficulty, selectedTag]) as T[];
 
-console.log("Filtered Problems in useProblemFilters:", filteredProblems);
-
-return {
+  return {
     search,
     difficulty,
     selectedTag,
@@ -39,7 +41,6 @@ return {
     setDifficulty,
     setSelectedTag,
 
-    filteredProblems
-}
-
+    filteredProblems,
+  };
 }

@@ -64,18 +64,50 @@ export const currentUserRole = async () => {
 export const getCurrentUserData = async () => {
   try {
     const user = await currentUser();
-
     if (!user) {
       return null;
     }
-
-    return await prisma.user.findUnique({
+    const data = await prisma.user.findUnique({
       where: {
         clerkId: user.id,
       },
+      include: {
+        submissions: true,
+        solvedProblems: {
+          include: {
+            problem: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        playlists: {
+          include: {
+            problems: {
+              include: {
+                problem: {
+                  select: {
+                    id: true,
+                    title: true,
+                    difficulty: true,
+                  },
+                },
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
     });
+
+    return data;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching user data:", error);
     return null;
   }
 };
