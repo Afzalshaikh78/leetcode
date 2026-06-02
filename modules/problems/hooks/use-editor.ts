@@ -6,7 +6,7 @@ import { executeCode, runCode } from "../actions";
 
 type ProblemLike = {
   id: string;
-  codeSnippets?: any;
+  codeSnippets?: Record<string, string>;
   testCases: unknown;
 };
 
