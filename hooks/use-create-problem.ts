@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,8 @@ export function useCreateProblem() {
 
   // useFieldArray requires objects, not primitives.
   // tags is string[] in the schema, so we manage it manually via form.setValue.
-  const tagsValue = form.watch("tags") ?? [];
+  // Use useWatch instead of form.watch to avoid React Compiler memoization warnings.
+  const tagsValue = useWatch({ control: form.control, name: "tags", defaultValue: [] as string[] }) as string[];
 
   const tagsArray = {
     fields: tagsValue.map((value, id) => ({ id: String(id), value })),
@@ -50,36 +51,36 @@ export function useCreateProblem() {
     },
   };
 
-const onSubmit = async (values: ProblemFormData) => {
-  try {
-    setIsLoading(true);
-    const response = await fetch("/api/create-problem", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+  const onSubmit = async (values: ProblemFormData) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/create-problem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
 
-    // Check if response is ok before parsing JSON
-    if (!response.ok) {
-      const text = await response.text(); // read as text first
-      console.error("Server error response:", text);
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        const text = await response.text(); // read as text first
+        console.error("Server error response:", text);
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Problem created successfully");
+        router.push("/problems");
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create problem";
+      console.error("Error creating problem:", error);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
-
-    const data = await response.json();
-
-    if (data.success) {
-      toast.success("Problem created successfully");
-      router.push("/problems");
-    }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to create problem";
-    console.error("Error creating problem:", error);
-    toast.error(message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const loadSampleData = () => {
     const sampleData = SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS] as ProblemFormData;
