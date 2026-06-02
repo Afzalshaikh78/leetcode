@@ -79,7 +79,7 @@ export function useEditor(problem: ProblemLike | null, addSubmission: (s: Submis
 
       if (res.success && res.submission) {
         addSubmission(res.submission);
-        toast.success("Code executed successfully");
+        toast.success("Code executed successfully")
       }
     } catch (error) {
       console.error("Error executing code", error);
