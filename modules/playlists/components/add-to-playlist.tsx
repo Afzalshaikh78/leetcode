@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Check } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 type PlaylistItem = {
@@ -71,7 +71,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, onSubmit, problemId }: AddToPlayl
           <DialogTitle>Add to Playlist</DialogTitle>
           <DialogDescription>Choose a playlist to add this problem to</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[300px] w-full pr-4">
+        <ScrollArea className="max-h-75 w-full pr-4">
           {playlists.length > 0 ? (
             <div className="space-y-2">
               {playlists.map((playlist) => (

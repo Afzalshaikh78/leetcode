@@ -59,7 +59,9 @@ export function useEditor(problem: ProblemLike | null, addSubmission: (s: Submis
       }
     } catch (error) {
       //  console.error("Error running code", error); // check full error in terminal
+
       toast.error("Error running code");
+      console.error("Error running code", error);
     } finally {
       setIsRunning(false);
     }
