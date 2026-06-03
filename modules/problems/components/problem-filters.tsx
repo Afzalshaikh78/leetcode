@@ -89,7 +89,7 @@ function SearchInput({ value, onChange }: { value: string; onChange: (value: str
 function DifficultySelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-45">
         <SelectValue placeholder="Select difficulty" />
       </SelectTrigger>
       <SelectContent>
@@ -110,7 +110,7 @@ function DifficultySelect({ value, onChange }: { value: string; onChange: (value
 function TagSelect({ value, onChange, tags }: { value: string; onChange: (value: string) => void; tags: string[] }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-45">
         <SelectValue placeholder="Select tag" />
       </SelectTrigger>
       <SelectContent>
