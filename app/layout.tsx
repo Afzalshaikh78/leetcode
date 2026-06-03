@@ -5,6 +5,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "sonner";
+import NavigationProgress from "@/components/navigation-progress";
+import { Suspense } from "react";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -52,6 +54,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ClerkProvider>
           <ThemeProvider defaultTheme="system">
+            <Suspense fallback={null}>
+              <NavigationProgress />
+            </Suspense>
             <Toaster/>
             {children}
           </ThemeProvider>
