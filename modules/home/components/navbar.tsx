@@ -16,48 +16,12 @@ export const Navbar = ({ userRole }: { userRole: UserRole }) => {
         <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
           {/* Logo */}
           <Link href="/" className="flex min-w-0 items-center gap-2">
-            <Image src="/logo.svg" alt="LeetCode" width={42} height={42} />
+            <Image src="/logo.svg" alt="Codesprint" width={42} height={42} />
             <span className="truncate text-base font-bold tracking-widest text-amber-300 sm:text-2xl">Codesprint</span>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden items-center justify-center gap-x-4 md:flex">
-            <Link href="/problems" className="cursor-pointer text-sm font-medium text-zinc-600 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400">
-              Problems
-            </Link>
-            <Link href="/about" className="cursor-pointer text-sm font-medium text-zinc-600 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400">
-              About
-            </Link>
-            <Link href="/profile" className="cursor-pointer text-sm font-medium text-zinc-600 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400">
-              Profile
-            </Link>
-          </div>
-
-          {/* Desktop Right Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <ModeToggle />
-            <Show when="signed-in">
-              {userRole === UserRole.ADMIN && (
-                <Link href="/create-problem">
-                  <Button variant="outline" size="default">
-                    Create Problem
-                  </Button>
-                </Link>
-              )}
-              <UserButton />
-            </Show>
-            <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton>
-                <Button size="sm" className="bg-amber-400 text-sm font-medium text-white hover:bg-amber-500">
-                  Sign Up
-                </Button>
-              </SignUpButton>
-            </Show>
-          </div>
-
-          {/* Mobile Hamburger */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Right Side — ModeToggle + Hamburger (same on all screens) */}
+          <div className="flex items-center gap-2">
             <ModeToggle />
             <Sheet>
               <SheetTrigger asChild>
@@ -77,6 +41,7 @@ export const Navbar = ({ userRole }: { userRole: UserRole }) => {
                   </SheetHeader>
 
                   <div className="flex-1 space-y-6 px-5 py-6">
+                    {/* Nav Links */}
                     <div className="space-y-2">
                       <SheetClose asChild>
                         <Link href="/problems" className="block rounded-xl border px-4 py-3 text-sm font-medium transition-colors hover:bg-muted">
@@ -95,6 +60,7 @@ export const Navbar = ({ userRole }: { userRole: UserRole }) => {
                       </SheetClose>
                     </div>
 
+                    {/* Auth Buttons */}
                     <div className="space-y-3 border-t pt-5">
                       <Show when="signed-in">
                         {userRole === UserRole.ADMIN && (
