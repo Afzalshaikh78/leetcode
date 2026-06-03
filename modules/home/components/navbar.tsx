@@ -34,7 +34,7 @@ export const Navbar = ({ userRole }: { userRole: UserRole }) => {
           </div>
 
           {/* Desktop Right Buttons */}
-          <div className="hidden items-center gap-4 ">
+          <div className="hidden md:flex items-center gap-4">
             <ModeToggle />
             <Show when="signed-in">
               {userRole === UserRole.ADMIN && (
