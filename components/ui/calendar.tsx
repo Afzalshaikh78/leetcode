@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { DayPicker, getDefaultClassNames, type DayButton, type Locale, type DayPickerProps } from "react-day-picker";
+import { DayPicker, getDefaultClassNames, type ChevronProps, type DayButton, type DayButtonProps, type Locale, type DayPickerProps, type WeekNumberProps } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -76,11 +76,7 @@ function Calendar({
         } as DayPickerProps["classNames"]
       }
       components={{
-        // derive component prop types from DayPickerProps
-        Root: (({ className, rootRef, ...props }: any) => {
-          return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
-        }) as DayPickerProps["components"]["Root"],
-        Chevron: (({ className, orientation, ...props }: any) => {
+        Chevron: ({ className, orientation, ...props }: ChevronProps) => {
           if (orientation === "left") {
             return <CaretLeftIcon className={cn("size-4", className)} {...props} />;
           }
@@ -90,15 +86,15 @@ function Calendar({
           }
 
           return <CaretDownIcon className={cn("size-4", className)} {...props} />;
-        }) as DayPickerProps["components"]["Chevron"],
-        DayButton: (({ ...props }: any) => <CalendarDayButton locale={locale} {...props} />) as DayPickerProps["components"]["DayButton"],
-        WeekNumber: (({ children, ...props }: any) => {
+        },
+        DayButton: (props: DayButtonProps) => <CalendarDayButton locale={locale} {...props} />,
+        WeekNumber: ({ children, ...props }: WeekNumberProps) => {
           return (
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">{children}</div>
             </td>
           );
-        }) as DayPickerProps["components"]["WeekNumber"],
+        },
         ...components,
       }}
       {...props}

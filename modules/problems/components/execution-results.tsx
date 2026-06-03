@@ -2,32 +2,11 @@
 
 import { SubmissionDetails } from "./submission-details";
 import { TestCaseTable } from "./testcase-table";
-
-type DetailedResult = {
-  testCase: number;
-  passed: boolean;
-  stdout: string | null;
-  expected: string | null;
-  stderr: string | null;
-  compile_output: string | null;
-  status: string;
-  memory?: string | undefined;
-  time?: string | undefined;
-};
-
-type SubmissionWithTestCases = {
-  id: string;
-  createdAt: string | Date;
-  language: string;
-  memory: string | null;
-  time: string | null;
-  status: string;
-  testCases: DetailedResult[];
-};
+import type { DetailedResult, SubmissionWithTestCases } from "../actions";
 
 type ExecutionResponse = {
   success: boolean;
-  submission?: SubmissionWithTestCases;
+  submission?: SubmissionWithTestCases | null;
   detailedResults?: DetailedResult[];
 };
 

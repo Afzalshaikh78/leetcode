@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 import { ModeToggle } from '@/components/mode-toggle';
 import { CreateProblemForm } from '@/modules/problems/components/create-problem-form';
 
+export const dynamic = "force-dynamic";
 
 const CreateProblemPage = async() => {
   const user = await getCurrentUserData();

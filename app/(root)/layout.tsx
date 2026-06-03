@@ -3,6 +3,8 @@ import { Navbar } from "@/modules/home/components/navbar";
 import { UserRole } from "@/lib/generated/prisma/enums";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const userRole = (await currentUserRole()) as UserRole;
   return (

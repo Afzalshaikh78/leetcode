@@ -9,7 +9,7 @@ import { getCurrentUserData } from "@/modules/auth/actions";
 // Types
 // -------------------------
 
-type DetailedResult = {
+export type DetailedResult = {
   testCase: number;
   passed: boolean;
   stdout: string | null;
@@ -21,7 +21,7 @@ type DetailedResult = {
   time: string | undefined;
 };
 
-type SubmissionWithTestCases = Submission & {
+export type SubmissionWithTestCases = Submission & {
   testCases: TestCaseResult[];
 };
 
