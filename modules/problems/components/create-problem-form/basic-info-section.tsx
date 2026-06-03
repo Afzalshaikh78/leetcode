@@ -4,17 +4,11 @@ import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { DIFFICULTY_OPTIONS } from "../../schema";
 
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, UseFormRegister, Control, FieldError, ControllerRenderProps } from "react-hook-form";
 import { z } from "zod";
 import { problemSchema } from "@/modules/problems/schema";
 
@@ -41,13 +35,13 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
 }
 
 interface FieldProps {
-  register: any;
-  error?: any;
+  register: UseFormRegister<ProblemFormData>;
+  error?: FieldError;
 }
 
 interface DifficultyFieldProps {
-  control: any;
-  error?: any;
+  control: Control<ProblemFormData>;
+  error?: FieldError;
 }
 
 function TitleField({ register, error }: FieldProps) {
@@ -56,12 +50,7 @@ function TitleField({ register, error }: FieldProps) {
       <Label htmlFor="title" className="text-lg font-semibold">
         Title
       </Label>
-      <Input
-        id="title"
-        {...register("title")}
-        placeholder="Enter problem title"
-        className="mt-2 text-lg"
-      />
+      <Input id="title" {...register("title")} placeholder="Enter problem title" className="mt-2 text-lg" />
       {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
     </div>
   );
@@ -73,12 +62,7 @@ function DescriptionField({ register, error }: FieldProps) {
       <Label htmlFor="description" className="text-lg font-semibold">
         Description
       </Label>
-      <Textarea
-        id="description"
-        {...register("description")}
-        placeholder="Enter problem description"
-        className="mt-2 min-h-32 text-base resize-y"
-      />
+      <Textarea id="description" {...register("description")} placeholder="Enter problem description" className="mt-2 min-h-32 text-base resize-y" />
       {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
     </div>
   );
@@ -93,7 +77,7 @@ function DifficultyField({ control, error }: DifficultyFieldProps) {
       <Controller
         name="difficulty"
         control={control}
-        render={({ field }: { field: any }) => (
+        render={({ field }: { field: ControllerRenderProps<ProblemFormData, "difficulty"> }) => (
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <SelectTrigger className="mt-2">
               <SelectValue placeholder="Select difficulty" />

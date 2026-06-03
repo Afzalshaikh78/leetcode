@@ -19,12 +19,43 @@ type SubmissionLike = {
   status: string;
 };
 
+type DetailedResult = {
+  testCase: number;
+  passed: boolean;
+  stdout: string | null;
+  expected: string | null;
+  stderr: string | null;
+  compile_output: string | null;
+  status: string;
+  memory?: string | undefined;
+  time?: string | undefined;
+};
+
+type SubmissionWithTestCases = SubmissionLike & {
+  testCases: DetailedResult[];
+};
+
+type ExecutionResponse =
+  | {
+      success: true;
+      submission: SubmissionWithTestCases;
+    }
+  | {
+      success: true;
+      detailedResults: DetailedResult[];
+      allPassed: boolean;
+    }
+  | {
+      success: false;
+      error?: string;
+    };
+
 export function useEditor(problem: ProblemLike | null, addSubmission: (s: SubmissionLike) => void, initialLanguage = "JAVASCRIPT") {
   const [selectedLanguage, setSelectedLanguage] = useState(initialLanguage);
   const [code, setCode] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [executionResponse, setExecutionResponse] = useState<unknown>(null);
+  const [executionResponse, setExecutionResponse] = useState<ExecutionResponse | null>(null);
 
   useEffect(() => {
     const nextCode = problem?.codeSnippets?.[selectedLanguage] ?? "";

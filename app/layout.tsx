@@ -22,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeSprint",
-  description: "CodeSprint",
+  title: "Codesprint",
+  description: "Codesprint",
   icons: {
     icon: "/logo.svg",
     shortcut: "/logo.svg",

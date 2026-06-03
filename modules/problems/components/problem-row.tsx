@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark, PencilIcon, TrashIcon } from "lucide-react";
+import { Bookmark, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -118,9 +118,6 @@ function ActionButtons({
         <>
           <Button variant="destructive" size="sm" onClick={() => onDelete(problemId)}>
             <TrashIcon className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="sm" disabled>
-            <PencilIcon className="h-4 w-4" />
           </Button>
         </>
       )}
