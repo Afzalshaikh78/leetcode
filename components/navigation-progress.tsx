@@ -20,20 +20,41 @@ function NavigationProgressInner() {
   }, [pathname, searchParams]);
 
   useEffect(() => {
-    const handleStart = () => {
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) return;
+
+      const link = target.closest("a[href]");
+      if (!link) return;
+
+      const href = link.getAttribute("href");
+      if (!href) return;
+
+      if (
+        href.startsWith("#") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:") ||
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("javascript:")
+      ) {
+        return;
+      }
+
       NProgress.start();
     };
 
-    const handleDone = () => {
-      NProgress.done();
+    const handleBeforeUnload = () => {
+      NProgress.start();
     };
 
-    window.addEventListener("beforeunload", handleStart);
-    window.addEventListener("load", handleDone);
+    window.addEventListener("pointerdown", handlePointerDown, true);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleStart);
-      window.removeEventListener("load", handleDone);
+      window.removeEventListener("pointerdown", handlePointerDown, true);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
