@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Trophy } from "lucide-react";
 import { redirect } from "next/navigation";
 import React from "react";
+import { ActivityCalendar } from "@/modules/profile/components/activity-calendar";
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -72,30 +73,36 @@ const ProfilePage = async () => {
         <UserInfoCard userData={profileData} />
 
         <Card className="mb-8 overflow-hidden border-border/60">
-          <CardContent className="flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="rounded-2xl bg-emerald-500/10 p-4">
-                <Flame className="h-8 w-8 text-emerald-500" />
+          <CardContent className="flex flex-col gap-6 p-6">
+            {/* Streak header row */}
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="rounded-2xl bg-emerald-500/10 p-4">
+                  <Flame className="h-8 w-8 text-emerald-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Coding Streak</p>
+                  <h2 className="text-3xl font-bold">
+                    {currentStreak} day{currentStreak === 1 ? "" : "s"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">Consecutive days with at least one accepted submission.</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Coding Streak</p>
-                <h2 className="text-3xl font-bold">{currentStreak} day{currentStreak === 1 ? "" : "s"}</h2>
-                <p className="text-sm text-muted-foreground">
-                  Consecutive days with at least one accepted submission.
-                </p>
+
+              <div className="flex gap-3">
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1.5">
+                  <Flame className="h-3.5 w-3.5" />
+                  Current {currentStreak}
+                </Badge>
+                <Badge variant="outline" className="gap-1.5 px-3 py-1.5">
+                  <Trophy className="h-3.5 w-3.5" />
+                  Best {longestStreak}
+                </Badge>
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Badge variant="secondary" className="gap-1.5 px-3 py-1.5">
-                <Flame className="h-3.5 w-3.5" />
-                Current {currentStreak}
-              </Badge>
-              <Badge variant="outline" className="gap-1.5 px-3 py-1.5">
-                <Trophy className="h-3.5 w-3.5" />
-                Best {longestStreak}
-              </Badge>
-            </div>
+            {/* Activity calendar */}
+            <ActivityCalendar />
           </CardContent>
         </Card>
 
