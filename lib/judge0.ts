@@ -42,7 +42,19 @@ interface Judge0SubmissionRequest {
   expected_output?: string;
 }
 
-const resultCache = new Map<string, object>();
+export interface Judge0BatchResult {
+  stdout: string;
+  stderr: string | null;
+  compile_output: string | null;
+  status: {
+    id: number;
+    description: string;
+  };
+  memory: string | null;
+  time: string | null;
+}
+
+const resultCache = new Map<string, Judge0BatchResult>();
 
 export async function submitBatch(submissions: Judge0SubmissionRequest[]) {
   const results = await Promise.all(
@@ -74,9 +86,9 @@ export async function submitBatch(submissions: Judge0SubmissionRequest[]) {
       const stderr = data.stderr ?? "";
       const compile_output = data.build_stderr ?? null;
 
-      const result = {
+      const result: Judge0BatchResult = {
         stdout,
-        stderr,
+        stderr: stderr || null,
         compile_output,
         status: {
           id: stderr || compile_output ? 11 : 3,
@@ -100,6 +112,9 @@ export async function pollBatchResults(tokens: string[]) {
   return tokens.map((token) => {
     const result = resultCache.get(token);
     resultCache.delete(token);
+    if (!result) {
+      throw new Error(`Missing Judge0 result for token: ${token}`);
+    }
     return result;
   });
 }

@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { Submission, TestCaseResult } from "@/lib/generated/prisma/client";
-import { getLanguageName, pollBatchResults, submitBatch } from "@/lib/judge0";
+import { getLanguageName, Judge0BatchResult, pollBatchResults, submitBatch } from "@/lib/judge0";
 import { getCurrentUserData } from "@/modules/auth/actions";
 
 // -------------------------
@@ -23,15 +23,6 @@ export type DetailedResult = {
 
 export type SubmissionWithTestCases = Submission & {
   testCases: TestCaseResult[];
-};
-
-type Judge0Result = {
-  stdout?: string;
-  stderr?: string;
-  compile_output?: string;
-  status: { description: string };
-  memory?: number;
-  time?: string;
 };
 
 // -------------------------
@@ -88,7 +79,7 @@ export const executeCode = async (source_code: string, language_id: number, stdi
 
   let allPassed = true;
 
-  const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
+  const detailedResults: DetailedResult[] = results.map((result: Judge0BatchResult, i: number) => {
     const stdout = result.stdout?.trim() ?? null;
     const expected_output = expected_outputs[i]?.trim();
     const passed = stdout === expected_output;
@@ -188,7 +179,7 @@ export const runCode = async (source_code: string, language_id: number, stdin: s
 
   let allPassed = true;
 
-  const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
+  const detailedResults: DetailedResult[] = results.map((result: Judge0BatchResult, i: number) => {
     const stdout = result.stdout?.trim() ?? null;
     const expected_output = expected_outputs[i]?.trim();
     const passed = stdout === expected_output;

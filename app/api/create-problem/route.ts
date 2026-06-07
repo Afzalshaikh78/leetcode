@@ -17,19 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {
-      title,
-      description,
-      difficulty,
-      tags,
-      examples,
-      constraints,
-      hints,
-      editorial,
-      testCases,
-      codeSnippets,
-      referenceSolutions,
-    } = await request.json();
+    const { title, description, difficulty, tags, examples, constraints, hints, editorial, testCases, codeSnippets, referenceSolutions } = await request.json();
 
     if (!title || !description || !difficulty || !testCases || !codeSnippets || !referenceSolutions) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -53,7 +41,6 @@ export async function POST(request: NextRequest) {
         base64_encoded: false,
       }));
 
-
       // console.log("Submissions:", submissions);
       // 3. Submit all testcases in one batch
 
@@ -62,21 +49,26 @@ export async function POST(request: NextRequest) {
       const tokens = submissionResults.map((res: { token: string }) => res.token);
 
       // 5. Poll judge0 until all submissions are done
-      const results = await pollBatchResults(tokens);
+      const results = (await pollBatchResults(tokens)) as Array<{
+        status: { id: number };
+        stdout?: string;
+        stderr?: string;
+        compile_output?: string;
+      } | null>;
       // 6. validate that each test cases
 
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
 
-        if (result.status.id !== 3) {
+        if (!result || result.status.id !== 3) {
           return NextResponse.json(
             {
               error: `Validation failed for ${language}`,
               testCase: {
                 input: submissions[i].stdin,
                 expectedOutput: submissions[i].expected_output,
-                actualOutput: result.stdout,
-                error: result.stderr || result.compile_output,
+                actualOutput: result?.stdout,
+                error: result?.stderr || result?.compile_output,
               },
               details: result,
             },
