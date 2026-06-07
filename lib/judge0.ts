@@ -38,7 +38,7 @@ interface Judge0SubmissionRequest {
   language_id: number;
   stdin: string;
   base64_encoded: boolean;
-  wait: boolean;
+  wait?: boolean;
   expected_output?: string;
 }
 
