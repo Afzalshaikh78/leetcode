@@ -1,16 +1,16 @@
-<<<<<<< HEAD
-# LeetCode Clone
+
+# Codesprint
 
 A modern LeetCode-style coding platform built with Next.js, Prisma, Clerk, and PostgreSQL. Users can browse problems, solve them in the built-in editor, track submissions, organize playlists, and view profile analytics like streaks and activity history.
 
-=======
+
 Codesprint<img width="1885" height="856" alt="Screenshot 2026-06-03 224823" src="https://github.com/user-attachments/assets/72e0c044-5481-463f-ab86-396a45b010f7" />
 
 Live preview:https://codesprint-1w2pp7pn4-afzals-projects-c2524272.vercel.app/
 
 A modern LeetCode-style coding platform built with Next.js, Prisma, Clerk, and PostgreSQL. Users can browse problems, solve them in the built-in editor, track submissions, organize playlists, and view profile analytics like streaks and activity history.
 
->>>>>>> f92fd3f2d8bf2a8de56f8fa84ad822ac81911e28
+
 ## Features
 
 - Authenticated user flows with Clerk
@@ -149,11 +149,3 @@ The repository is configured so Vercel will:
 - The app uses Clerk-protected routes, so make sure your Vercel domain is added to your Clerk allowed domains.
 - If you change image hosts or use external avatars, update `next.config.ts` as needed.
 - Keep your production database reachable from Vercel.
-
-## License
-
-<<<<<<< HEAD
-No license has been specified yet.
-=======
-No license has been specified yet. 
->>>>>>> f92fd3f2d8bf2a8de56f8fa84ad822ac81911e28
