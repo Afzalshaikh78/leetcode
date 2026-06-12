@@ -3,7 +3,7 @@ import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 
-type SampleType = "DP" | "string" | "array";
+type SampleType = "DP" | "string" | "array" | "linkedList" | "stack" | "binaryTree";
 
 type FormHeaderProps = {
   sampleType: SampleType;
@@ -21,17 +21,8 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHead
         </CardTitle>
 
         <div className="flex flex-col md:flex-row gap-3">
-          <SampleTypeToggle
-            sampleType={sampleType}
-            setSampleType={setSampleType}
-          />
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={onLoadSample}
-            className="gap-2"
-          >
+          <SampleTypeToggle sampleType={sampleType} setSampleType={setSampleType} />
+          <Button type="button" variant="secondary" size="sm" onClick={onLoadSample} className="gap-2">
             <Download className="w-4 h-4" />
             Load Sample
           </Button>
@@ -41,36 +32,29 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHead
   );
 }
 
+const SAMPLE_BUTTONS: { type: SampleType; label: string }[] = [
+  { type: "DP", label: "DP" },
+  { type: "string", label: "String" },
+  { type: "array", label: "Array" },
+  { type: "linkedList", label: "Linked List" },
+  { type: "stack", label: "Stack" },
+  { type: "binaryTree", label: "Binary Tree" },
+];
+
 function SampleTypeToggle({ sampleType, setSampleType }: Pick<FormHeaderProps, "sampleType" | "setSampleType">) {
   return (
-    <div className="flex border rounded-md">
-      <Button
-        type="button"
-        variant={sampleType === "DP" ? "default" : "outline"}
-        size="sm"
-        className="rounded-r-none"
-        onClick={() => setSampleType("DP")}
-      >
-        DP Problem
-      </Button>
-      <Button
-        type="button"
-        variant={sampleType === "string" ? "default" : "outline"}
-        size="sm"
-        className="rounded-l-none"
-        onClick={() => setSampleType("string")}
-      >
-        String Problem
-      </Button>
-      <Button
-        type="button"
-        variant={sampleType === "array" ? "default" : "outline"}
-        size="sm"
-        className="rounded-l-none"
-        onClick={() => setSampleType("array")}
-      >
-        Array Problem
-      </Button>
+    <div className="flex flex-wrap border rounded-md overflow-hidden">
+      {SAMPLE_BUTTONS.map(({ type, label }, index) => (
+        <Button
+          key={type}
+          type="button"
+          variant={sampleType === type ? "default" : "outline"}
+          size="sm"
+          className={["rounded-none border-0", index !== 0 ? "border-l border-l-border" : ""].join(" ")}
+          onClick={() => setSampleType(type)}>
+          {label}
+        </Button>
+      ))}
     </div>
   );
 }
