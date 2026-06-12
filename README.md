@@ -3,7 +3,7 @@
 
 A modern LeetCode-style coding platform built with Next.js, Prisma, Clerk, and PostgreSQL. Users can browse problems, solve them in the built-in editor, track submissions, organize playlists, and view profile analytics like streaks and activity history.
 
-=======
+
 Codesprint<img width="1885" height="856" alt="Screenshot 2026-06-03 224823" src="https://github.com/user-attachments/assets/72e0c044-5481-463f-ab86-396a45b010f7" />
 
 Live preview:https://codesprint-1w2pp7pn4-afzals-projects-c2524272.vercel.app/
