@@ -1,13 +1,14 @@
 "use client";
+import { Dispatch, SetStateAction } from "react";
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 
-type SampleType = "DP" | "string" | "array" | "linkedList" | "stack" | "binaryTree";
+export type SampleType = "DP" | "string" | "array" | "linkedList" | "stack" | "binaryTree";
 
 type FormHeaderProps = {
   sampleType: SampleType;
-  setSampleType: (sampleType: SampleType) => void;
+  setSampleType: Dispatch<SetStateAction<SampleType>>;
   onLoadSample: () => void;
 };
 

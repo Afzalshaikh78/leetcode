@@ -9,9 +9,10 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { defaultFormValues, problemSchema } from "@/modules/problems/schema";
 import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problem";
+import { SampleType } from "@/modules/problems/components/create-problem-form/form-header";
 
 type ProblemFormData = z.infer<typeof problemSchema>;
-type SampleType = "DP" | "string" | "array";
+
 
 export function useCreateProblem() {
   const router = useRouter();

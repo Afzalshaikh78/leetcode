@@ -12,40 +12,21 @@ import { LanguageSections } from "./language-section";
 import { AdditionalInfoSection } from "./additional-info-section";
 
 export function CreateProblemForm() {
-  const {
-    form,
-    testCasesArray,
-    tagsArray,
-    isLoading,
-    sampleType,
-    isSampleLoaded,
-    setSampleType,
-    onSubmit,
-    loadSampleData,
-    resetFormToDefault,
-  } = useCreateProblem();
+  const { form, testCasesArray, tagsArray, isLoading, sampleType, isSampleLoaded, setSampleType, onSubmit, loadSampleData, resetFormToDefault } = useCreateProblem();
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <Card className="shadow-xl">
         {/* FormHeader */}
-        <FormHeader
-          sampleType={sampleType}
-          setSampleType={setSampleType}
-          onLoadSample={loadSampleData}
-        />
+        <FormHeader sampleType={sampleType} setSampleType={setSampleType} onLoadSample={loadSampleData} />
 
         <CardContent className="p-6">
           <form onSubmit={onSubmit} className="space-y-8">
-            <BasicInfoSection form={form}/>
-            <TagsSection form={form} tagsArray={tagsArray}/>
-            <TestCasesSection form={form} testCasesArray={testCasesArray}/>
-            <LanguageSections form={form}/>
-              <AdditionalInfoSection form={form} />
-              <SubmitButton
-                isLoading={isLoading}
-                showReset={isSampleLoaded}
-                onReset={resetFormToDefault}
-              />
+            <BasicInfoSection form={form} />
+            <TagsSection form={form} tagsArray={tagsArray} />
+            <TestCasesSection form={form} testCasesArray={testCasesArray} />
+            <LanguageSections form={form} />
+            <AdditionalInfoSection form={form} />
+            <SubmitButton isLoading={isLoading} showReset={isSampleLoaded} onReset={resetFormToDefault} />
           </form>
         </CardContent>
       </Card>
@@ -53,18 +34,9 @@ export function CreateProblemForm() {
   );
 }
 
-
-function SubmitButton({
-  isLoading,
-  showReset,
-  onReset,
-}: {
-  isLoading: boolean;
-  showReset: boolean;
-  onReset: () => void;
-}) {
-return (
-     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+function SubmitButton({ isLoading, showReset, onReset }: { isLoading: boolean; showReset: boolean; onReset: () => void }) {
+  return (
+    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
       {showReset && (
         <Button type="button" variant="outline" size="lg" onClick={onReset} disabled={isLoading}>
           Reset Sample
@@ -84,5 +56,5 @@ return (
         )}
       </Button>
     </div>
-)
+  );
 }
