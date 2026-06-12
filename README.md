@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# LeetCode Clone
+# Codesprint
 
 A modern LeetCode-style coding platform built with Next.js, Prisma, Clerk, and PostgreSQL. Users can browse problems, solve them in the built-in editor, track submissions, organize playlists, and view profile analytics like streaks and activity history.
 
